@@ -3,3 +3,4 @@ __pycache__/
 route_map.html
 .DS_Store
 .vscode/
+.venv/
