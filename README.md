@@ -23,6 +23,9 @@ A Python networking tool that traces the route packets take to a destination, me
 
 These are indicators, not proof that something is wrong. Many routes cross oceans and many routers ignore ICMP. The thresholds are at the top of `anomalies.py` and can be changed.
 
+## Example map
+<img width="1467" height="986" alt="pynet-tracer" src="https://github.com/user-attachments/assets/8dcc5605-51d0-429c-a06a-91462ab069de" />
+
 ## 🛠️ Tech Stack
 - **Language:** Python 3
 - **Networking Library:** Scapy (Layer 3/4 packet crafting & ICMP manipulation)
