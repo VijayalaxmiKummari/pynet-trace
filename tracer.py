@@ -125,14 +125,14 @@ def generate_map(hops, anomalies=None, output_file="route_map.html"):
 
     # Center map on the first valid hop location
     start_loc = [locations[0]["lat"], locations[0]["lon"]]
-    route_map = folium.Map(location=start_loc, zoom_start=3, tiles="CartoDB dark_matter")
+    route_map = folium.Map(location=start_loc, zoom_start=3, tiles="OpenStreetMap")
 
     coordinates = []
     for hop in locations:
         coord = [hop["lat"], hop["lon"]]
         coordinates.append(coord)
         flagged = hop["ttl"] in notes
-        colour = "#FF4D4D" if flagged else "#00FF7F"
+        colour = "#D7191C" if flagged else "#008A3E"
 
         # Add marker for each hop
         popup_text = (f"<b>Hop:</b> {hop['ttl']}<br><b>IP:</b> {hop['ip']}<br>"
@@ -150,7 +150,7 @@ def generate_map(hops, anomalies=None, output_file="route_map.html"):
         ).add_to(route_map)
 
     # Draw line connecting hops
-    folium.PolyLine(coordinates, color="#00BFFF", weight=2.5, opacity=0.8).add_to(route_map)
+    folium.PolyLine(coordinates, color="#0066CC", weight=2.5, opacity=0.8).add_to(route_map)
 
     route_map.save(output_file)
     print(f"\n[✓] Interactive map successfully saved to: {os.path.abspath(output_file)}")

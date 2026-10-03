@@ -46,7 +46,9 @@ pynet-trace/
 
 ### 1. Install dependencies
 ```bash
-python3 -m pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ### 2. Try the demo (no sudo, no network)
@@ -59,7 +61,7 @@ This uses a built-in sample route so you can see the anomaly checks and the map 
 > **Note:** Scapy requires elevated administrative privileges to craft raw ICMP packets on macOS/Linux.
 
 ```bash
-sudo python3 tracer.py google.com
+sudo .venv/bin/python3 tracer.py google.com
 ```
 
 Options:
