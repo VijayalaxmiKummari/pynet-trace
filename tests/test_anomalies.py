@@ -36,6 +36,10 @@ class HelperTests(unittest.TestCase):
         self.assertFalse(an.is_public("100.64.0.1"))      # carrier-grade NAT range
         self.assertFalse(an.is_public("not-an-ip"))
 
+    def test_documentation_ranges_count_as_public(self):
+        self.assertTrue(an.is_public("198.51.100.10"))
+        self.assertTrue(an.is_public("203.0.113.20"))
+
 
 class CheckTests(unittest.TestCase):
     def test_clean_route_has_no_findings(self):

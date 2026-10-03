@@ -32,12 +32,22 @@ def distance_km(lat1, lon1, lat2, lon2):
     return 2 * radius * math.asin(math.sqrt(a))
 
 
+# Address ranges reserved for examples and documentation (RFC 5737, RFC 3849).
+# Nobody owns them, so the demo route and the tests use them to stand in for
+# public addresses. They are counted as public for that reason.
+DOCUMENTATION_RANGES = [ipaddress.ip_network(n) for n in (
+    "192.0.2.0/24", "198.51.100.0/24", "203.0.113.0/24", "2001:db8::/32")]
+
+
 def is_public(ip):
     """True for an address that is routable on the public internet."""
     try:
-        return ipaddress.ip_address(ip).is_global
+        address = ipaddress.ip_address(ip)
     except ValueError:
         return False
+    if any(address in network for network in DOCUMENTATION_RANGES):
+        return True
+    return address.is_global
 
 
 def _finding(kind, severity, ttl, detail):

@@ -74,6 +74,13 @@ def trace_route(target_host, max_hops=20, send=send_probe):
             print(f"Hop {ttl}: {reply.src}  ({rtt_ms} ms) [Destination Reached!]")
             hops.append({"ttl": ttl, "ip": reply.src, "rtt_ms": rtt_ms})
             break
+        elif reply.type == 3:   # Destination Unreachable (blocked or no route)
+            print(f"Hop {ttl}: {reply.src}  ({rtt_ms} ms) [Destination Unreachable - stopping]")
+            hops.append({"ttl": ttl, "ip": reply.src, "rtt_ms": rtt_ms})
+            break
+        else:                   # Any other ICMP reply: keep the hop and carry on
+            print(f"Hop {ttl}: {reply.src}  ({rtt_ms} ms) [ICMP type {reply.type}]")
+            hops.append({"ttl": ttl, "ip": reply.src, "rtt_ms": rtt_ms})
 
     return hops
 

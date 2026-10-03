@@ -42,6 +42,24 @@ class TraceRouteTests(unittest.TestCase):
         send = fake_sender([FakeReply("10.0.0.%d" % i, 11) for i in range(1, 50)])
         self.assertEqual(len(tracer.trace_route("example.com", max_hops=5, send=send)), 5)
 
+    def test_stops_when_destination_is_unreachable(self):
+        send = fake_sender([
+            FakeReply("192.168.1.1", 11),
+            FakeReply("81.2.69.142", 3),            # destination unreachable
+            FakeReply("9.9.9.9", 11),               # must never be reached
+        ])
+        hops = tracer.trace_route("example.com", max_hops=10, send=send)
+        self.assertEqual([h["ip"] for h in hops], ["192.168.1.1", "81.2.69.142"])
+
+    def test_other_reply_types_are_still_recorded(self):
+        send = fake_sender([
+            FakeReply("192.168.1.1", 11),
+            FakeReply("81.2.69.142", 12),           # parameter problem
+            FakeReply("8.8.8.8", 0),
+        ])
+        hops = tracer.trace_route("example.com", max_hops=10, send=send)
+        self.assertEqual([h["ttl"] for h in hops], [1, 2, 3])
+
 
 class GeolocateTests(unittest.TestCase):
     def test_adds_location_when_lookup_succeeds(self):
@@ -73,6 +91,12 @@ class GeolocateTests(unittest.TestCase):
         with mock.patch.object(tracer.requests, "get") as get:
             tracer.geolocate_ips([{"ttl": 1, "ip": None, "rtt_ms": None}])
         get.assert_not_called()
+
+class DemoRouteTests(unittest.TestCase):
+    def test_demo_route_triggers_every_check_it_is_meant_to_show(self):
+        kinds = {f["type"] for f in tracer.detect_anomalies(tracer.DEMO_ROUTE)}
+        self.assertEqual(kinds, {"country_revisit", "private_mid_path",
+                                 "latency_spike", "long_jump"})
 
 
 if __name__ == "__main__":
